@@ -1,8 +1,11 @@
+from django.db.models import Count, F
 from django.shortcuts import render
 
 from rest_framework import mixins, viewsets
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
-from .serializers import BookSerialzer
+from .serializers import BookSerialzer, AuthorSerializer
 
 # Create your views here.
 from .models import *
@@ -11,7 +14,32 @@ class BookViewSet(mixins.ListModelMixin,
                   viewsets.GenericViewSet):
 
     def get_queryset(self):
-        return Book.objects.all()
+        #Задание 1.
+        return Book.objects.all().select_related('author', 'publisher')
 
     def get_serializer_class(self):
         return BookSerialzer
+
+    #Задача 4.
+    @action(
+        detail=False,
+        methods=['GET'],
+        url_path='equal',
+    )
+    def get_equal_author_publisher(self, _):
+        queryset = self.get_queryset().filter(author__name=F('publisher__name'))
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+
+
+
+class AuthorViewSet(mixins.ListModelMixin,
+                    viewsets.GenericViewSet):
+
+    def get_queryset(self):
+        # Задание 3.
+        return Author.objects.annotate(books_quantity=Count('books')).filter(books_quantity__gt=3)
+
+    def get_serializer_class(self):
+        return AuthorSerializer
