@@ -66,6 +66,21 @@ files = [
 python-dotenv = "*"
 
 [[package]]
+name = "faker"
+version = "37.6.0"
+description = "Faker is a Python package that generates fake data for you."
+optional = false
+python-versions = ">=3.9"
+groups = ["main"]
+files = [
+    {file = "faker-37.6.0-py3-none-any.whl", hash = "sha256:3c5209b23d7049d596a51db5d76403a0ccfea6fc294ffa2ecfef6a8843b1e6a7"},
+    {file = "faker-37.6.0.tar.gz", hash = "sha256:0f8cc34f30095184adf87c3c24c45b38b33ad81c35ef6eb0a3118f301143012c"},
+]
+
+[package.dependencies]
+tzdata = "*"
+
+[[package]]
 name = "psycopg2"
 version = "2.9.10"
 description = "psycopg2 - Python-PostgreSQL Database Adapter"
@@ -123,7 +138,6 @@ description = "Provider of IANA time zone data"
 optional = false
 python-versions = ">=2"
 groups = ["main"]
-markers = "sys_platform == \"win32\""
 files = [
     {file = "tzdata-2025.2-py2.py3-none-any.whl", hash = "sha256:1a403fada01ff9221ca8044d701868fa132215d84beb92242d9acd2147f667a8"},
     {file = "tzdata-2025.2.tar.gz", hash = "sha256:b60a638fcc0daffadf82fe0f57e53d06bdec2f36c4df66280ae79bce6bd6f2b9"},
@@ -132,4 +146,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.13"
-content-hash = "cb86c9d2e6189c3eb5aeec9a5e929294f9ad6f72ced5d28e83c2fc4f8d97a244"
+content-hash = "8434dfa742d6fe749ee98f1e6915c0c98e6d11b8ffc0ad5dda5c99db169f58af"
