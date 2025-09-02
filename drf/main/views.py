@@ -2,7 +2,7 @@ from decimal import Decimal
 from pickle import FALSE
 
 from django.core.serializers import get_serializer
-from django.db.models import Count, F, Q
+from django.db.models import Count, F, Q, ExpressionWrapper, DecimalField
 from django.shortcuts import render
 
 from django.db import transaction
@@ -11,7 +11,7 @@ from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from .serializers import BookSerialzer, AuthorSerializer
+from .serializers import BookSerialzer, BookDiscountSerialzer, AuthorSerializer
 
 # Create your views here.
 from .models import *
@@ -56,6 +56,7 @@ class BookViewSet(mixins.ListModelMixin,
 
         return Response(BookSerialzer(instance).data)
 
+    #Задание 8
     @action(
         detail=False,
         methods=['GET'],
@@ -67,7 +68,7 @@ class BookViewSet(mixins.ListModelMixin,
 
         return Response(serializer.data)
 
-
+    #Задание 7
     @action(
         detail=False,
         methods=['GET'],
@@ -79,6 +80,18 @@ class BookViewSet(mixins.ListModelMixin,
 
         return Response(serializer.data)
 
+    #Задание 10.
+    @action(
+        detail=False,
+        methods=['GET'],
+        url_path='five_hundred'
+    )
+    def five_hundred(self, _):
+        queryset = self.get_queryset().annotate(discount=ExpressionWrapper(F('price')* Decimal(0.8),
+                                                                           output_field=DecimalField(max_digits=12, decimal_places=2))).filter(discount__gt=500)
+        serializer = BookDiscountSerialzer(queryset, many=True)
+
+        return Response(serializer.data)
 
 
 
