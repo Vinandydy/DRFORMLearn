@@ -82,3 +82,18 @@ class AuthorViewSet(mixins.ListModelMixin,
 
     def get_serializer_class(self):
         return AuthorSerializer
+
+    # Задание 9. Найти книги Автора А, которые дешевле нижней границы ИЛИ книги Автора Б дороже верхней границы.
+    @action(
+        detail=False,
+        methods=['POST'],
+        url_path='find'
+    )
+    def find_author_book(self, request):
+        data = request.data
+        print(data)
+        queryset = Author.objects.filter(Q(Q(name=data.get('author_a')) & Q(books__price__lt=data.get('price_a'))) |
+                                              Q(Q(name=data.get('author_b')) & Q(books__price__gt=data.get('price_b')))).prefetch_related('books')
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
