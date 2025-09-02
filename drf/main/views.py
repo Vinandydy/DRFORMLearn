@@ -1,6 +1,8 @@
 from decimal import Decimal
+from pickle import FALSE
 
-from django.db.models import Count, F
+from django.core.serializers import get_serializer
+from django.db.models import Count, F, Q
 from django.shortcuts import render
 
 from django.db import transaction
@@ -54,8 +56,16 @@ class BookViewSet(mixins.ListModelMixin,
 
         return Response(BookSerialzer(instance).data)
 
+    @action(
+        detail=False,
+        methods=['GET'],
+        url_path='is_cheap_or_expensive'
+    )
+    def book_price(self, _):
+        queryset = self.get_queryset().filter(Q(price__gt=2000) | Q(price__lt=500))
+        serializer = self.get_serializer(queryset, many=True)
 
-
+        return Response(serializer.data)
 
 
 
