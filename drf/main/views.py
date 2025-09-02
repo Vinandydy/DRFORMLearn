@@ -1,5 +1,9 @@
+from decimal import Decimal
+
 from django.db.models import Count, F
 from django.shortcuts import render
+
+from django.db import transaction
 
 from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
@@ -11,6 +15,8 @@ from .serializers import BookSerialzer, AuthorSerializer
 from .models import *
 
 class BookViewSet(mixins.ListModelMixin,
+                  mixins.RetrieveModelMixin,
+                  mixins.UpdateModelMixin,
                   viewsets.GenericViewSet):
 
     def get_queryset(self):
@@ -30,6 +36,29 @@ class BookViewSet(mixins.ListModelMixin,
         queryset = self.get_queryset().filter(author__name=F('publisher__name'))
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
+    #Задание 5.
+    @action(
+        detail=True,
+        methods=['GET'],
+        url_path='update'
+    )
+    @transaction.atomic
+    def atomic_update(self, request, pk=None):
+        instance = self.get_object()
+        query_params = request.query_params
+        if query_params.get('discount'):
+            instance.price = Decimal(float(instance.price) * 0.8)
+            instance.save()
+            instance.refresh_from_db()
+
+        return Response(BookSerialzer(instance).data)
+
+
+
+
+
+
 
 
 
