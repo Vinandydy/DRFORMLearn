@@ -68,7 +68,16 @@ class BookViewSet(mixins.ListModelMixin,
         return Response(serializer.data)
 
 
+    @action(
+        detail=False,
+        methods=['GET'],
+        url_path='prefix'
+    )
+    def book_prefix(self, _):
+        queryset = self.get_queryset().filter(title__contains='Book:')
+        serializer = self.get_serializer(queryset, many=True)
 
+        return Response(serializer.data)
 
 
 
