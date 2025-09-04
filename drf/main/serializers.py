@@ -4,9 +4,11 @@ from .models import Book, Author, Publisher
 
 
 class BookSerialzer(serializers.ModelSerializer):
+    quantity = serializers.IntegerField(read_only=True)
+
     class Meta:
         model = Book
-        fields = ['title', 'author', 'publisher', 'price', 'published_year']
+        fields = ['title', 'author', 'publisher', 'price', 'published_year', 'quantity']
 
 
 class AuthorSerializer(serializers.ModelSerializer):

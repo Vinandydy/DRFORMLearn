@@ -3,8 +3,8 @@ from email.policy import default
 from pickle import FALSE
 
 from django.core.serializers import get_serializer
-from django.db.models import Count, F, Q, ExpressionWrapper, DecimalField, Sum, Avg
-from django.db.models.functions import TruncMonth
+from django.db.models import Count, F, Q, ExpressionWrapper, DecimalField, Sum, Avg, Value
+from django.db.models.functions import TruncMonth, Concat
 from django.shortcuts import render
 
 from django.db import transaction
@@ -25,10 +25,11 @@ class BookViewSet(mixins.ListModelMixin,
 
     def get_queryset(self):
         #Задание 1.
-        return Book.objects.all().select_related('author', 'publisher')
+        return Book.objects.all().select_related('author', 'publisher').annotate(quantity=Sum('salesBook__quantity'))
 
     def get_serializer_class(self):
         return BookSerialzer
+
 
 
     #Задача 4.
@@ -42,20 +43,11 @@ class BookViewSet(mixins.ListModelMixin,
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
-    #Задание 5.
-    @action(
-        detail=True,
-        methods=['GET'],
-        url_path='update'
-    )
-    @transaction.atomic
-    def atomic_update(self, request, pk=None):
+    @action(detail=True, methods=['GET'], url_path='update')
+    def atomic_update(self, _):
         instance = self.get_object()
-        query_params = request.query_params
-        if query_params.get('discount'):
-            instance.price = Decimal(float(instance.price) * 0.8)
-            instance.save()
-            instance.refresh_from_db()
+        Book.objects.filter(pk=instance.pk).update(price=F('price') * Decimal('0.8'))
+        instance.refresh_from_db()
 
         return Response(BookSerialzer(instance).data)
 
@@ -72,15 +64,14 @@ class BookViewSet(mixins.ListModelMixin,
         return Response(serializer.data)
 
     #Задание 7
-    @action(
-        detail=False,
-        methods=['GET'],
-        url_path='prefix'
-    )
-    def book_prefix(self, _):
-        queryset = self.get_queryset().filter(title__contains='Book:')
+    @action(detail=False,
+            methods=['GET'],
+            url_path='prefix')
+    def book_prefix(self, request):
+        queryset = self.get_queryset().annotate(
+            prefixed_title=Concat(Value('Book: '), 'title')
+        )
         serializer = self.get_serializer(queryset, many=True)
-
         return Response(serializer.data)
 
     #Задание 10.
