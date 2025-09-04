@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
-from .models import Book, Author
+from .models import Book, Author, Publisher
+
 
 class BookSerialzer(serializers.ModelSerializer):
     class Meta:
@@ -25,3 +26,15 @@ class BookDiscountSerialzer(serializers.ModelSerializer):
         if hasattr(obj, 'discount'):
             return obj.discount
         return None
+
+
+class PublisherSerializer(serializers.ModelSerializer):
+    books_count = serializers.IntegerField(read_only=True)
+    sale_income = serializers.DecimalField(max_digits=12, decimal_places=2, read_only=True, allow_null=True)
+    avg_price = serializers.DecimalField(max_digits=12, decimal_places=2, read_only=True, allow_null=True)
+
+    class Meta:
+        model = Publisher
+        fields = ['name', 'books_count', 'sale_income', 'avg_price']
+
+
