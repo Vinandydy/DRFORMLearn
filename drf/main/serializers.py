@@ -38,3 +38,10 @@ class PublisherSerializer(serializers.ModelSerializer):
         fields = ['name', 'books_count', 'sale_income', 'avg_price']
 
 
+class SalesSerializer(serializers.ModelSerializer):
+    month = serializers.DateField()
+    total_quantity = serializers.IntegerField()
+
+    class Meta:
+        model = Book
+        fields = ['title', 'month', 'total_quantity']
