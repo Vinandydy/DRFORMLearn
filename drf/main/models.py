@@ -20,6 +20,11 @@ class Book(models.Model):
     published_year = models.IntegerField()
 
 class Sale(models.Model):
-    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='sales')
-    quantity = models.IntegerField()
+    book = models.ManyToManyField(Book, through='SaleBook', related_name='sales')
     date = models.DateField()
+
+
+class SaleBook(models.Model):
+    sale = models.ForeignKey(Sale, on_delete=models.CASCADE, related_name='salesBook')
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='salesBook')
+    quantity = models.IntegerField(default=1)

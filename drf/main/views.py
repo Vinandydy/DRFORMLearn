@@ -13,7 +13,7 @@ from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from .serializers import BookSerialzer, BookDiscountSerialzer, AuthorSerializer, PublisherSerializer
+from .serializers import BookSerialzer, BookDiscountSerialzer, AuthorSerializer, PublisherSerializer, SalesSerializer
 
 # Create your views here.
 from .models import *
@@ -96,6 +96,21 @@ class BookViewSet(mixins.ListModelMixin,
 
         return Response(serializer.data)
 
+    #Задание 2
+    @action(
+        detail=False,
+        methods=['GET'],
+        url_path='sales_income'
+    )
+    def sales_income(self, _):
+        queryset = Book.objects.annotate(
+            month=TruncMonth('salesBook__sale__date')
+        ).values('title', 'month').annotate(
+            total_quantity=Sum('salesBook__quantity')
+        ).order_by('title', 'month')
+        serializer = SalesSerializer(queryset, many=True)
+        return Response(serializer.data)
+
 
 
 class AuthorViewSet(mixins.ListModelMixin,
@@ -122,19 +137,8 @@ class AuthorViewSet(mixins.ListModelMixin,
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
-"""
-class SaleViewSet(mixins.ListModelMixin,
-                  viewsets.GenericViewSet):
 
-    def get_queryset(self):
-        return SaleBook.objects.annotate(
-            month=TruncMonth('sale__date')
-        ).values(
-            'book__id', 'book_title', 'month'
-        ).annotate(
-            total=Sum('quantity')
-        ).order_by('book_id', 'month')
-"""
+
 
 class PublisherViewSet(mixins.ListModelMixin,
                        viewsets.GenericViewSet):
@@ -142,7 +146,7 @@ class PublisherViewSet(mixins.ListModelMixin,
     def get_queryset(self):
         return Publisher.objects.filter(books__published_year__gt=2010).annotate(
             books_count=Count('books'),
-            sale_income=Sum('books__sales__quantity', default=0) * Avg('books__price'),
+            sale_income=Sum('books__salesBook__quantity', default=0) * Avg('books__price'),
             avg_price=Avg('books__price')
         ).order_by('-sale_income')
 
