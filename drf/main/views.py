@@ -1,8 +1,10 @@
 from decimal import Decimal
+from email.policy import default
 from pickle import FALSE
 
 from django.core.serializers import get_serializer
-from django.db.models import Count, F, Q, ExpressionWrapper, DecimalField
+from django.db.models import Count, F, Q, ExpressionWrapper, DecimalField, Sum, Avg
+from django.db.models.functions import TruncMonth
 from django.shortcuts import render
 
 from django.db import transaction
@@ -11,7 +13,7 @@ from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from .serializers import BookSerialzer, BookDiscountSerialzer, AuthorSerializer
+from .serializers import BookSerialzer, BookDiscountSerialzer, AuthorSerializer, PublisherSerializer
 
 # Create your views here.
 from .models import *
@@ -27,6 +29,7 @@ class BookViewSet(mixins.ListModelMixin,
 
     def get_serializer_class(self):
         return BookSerialzer
+
 
     #Задача 4.
     @action(
@@ -119,3 +122,29 @@ class AuthorViewSet(mixins.ListModelMixin,
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
+"""
+class SaleViewSet(mixins.ListModelMixin,
+                  viewsets.GenericViewSet):
+
+    def get_queryset(self):
+        return SaleBook.objects.annotate(
+            month=TruncMonth('sale__date')
+        ).values(
+            'book__id', 'book_title', 'month'
+        ).annotate(
+            total=Sum('quantity')
+        ).order_by('book_id', 'month')
+"""
+
+class PublisherViewSet(mixins.ListModelMixin,
+                       viewsets.GenericViewSet):
+
+    def get_queryset(self):
+        return Publisher.objects.filter(books__published_year__gt=2010).annotate(
+            books_count=Count('books'),
+            sale_income=Sum('books__sales__quantity', default=0) * Avg('books__price'),
+            avg_price=Avg('books__price')
+        ).order_by('-sale_income')
+
+    def get_serializer_class(self):
+        return PublisherSerializer
