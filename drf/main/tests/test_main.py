@@ -1,14 +1,45 @@
+from main.models import *
+from rest_framework.test import APITestCase
+from rest_framework import status
 from django.urls import reverse
 
-from main.models import *
-from main.serializers import BookSerialzer
-from rest_framework.test import APITestCase
+import factory
 
-class BooksApiTest(APITestCase):
-    def test_get(self):
-        book_1 = Book.objects.create(title = 'test', author_id=1, publisher_id=1, price=1000.00, published_year=2004)
-        book_2 = Book.objects.create(title='test_2', author_id=2, publisher_id=2, price=2000.00, published_year=2004)
-        url = reverse('book-list')
-        response = self.client.get(url)
-        serializer_data = BookSerialzer([book_1, book_2], many=True).data
-        self.assertEqual(serializer_data, response.data)
+class AuthorFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Author
+
+    name = factory.Faker('name')
+
+
+class PublisherFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Publisher
+
+    name = factory.Faker('company')
+
+
+class BookFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Book
+
+    title = factory.Faker('sentence')
+    author = factory.SubFactory(AuthorFactory)
+    publisher = factory.SubFactory(PublisherFactory)
+    price = factory.Faker('pydecimal', positive=True)
+    published_year = factory.Faker('year')
+
+
+class SaleFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Sale
+
+    date = factory.Faker('date_this_decade')
+
+class SaleBookFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = SaleBook
+
+    sale = factory.SubFactory(SaleFactory)
+    book = factory.SubFactory(BookFactory)
+    quantity = factory.Faker('random_int', min=1, max=100)
