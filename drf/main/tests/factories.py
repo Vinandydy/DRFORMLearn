@@ -1,7 +1,4 @@
 from main.models import *
-from rest_framework.test import APITestCase
-from rest_framework import status
-from django.urls import reverse
 
 import factory
 
@@ -23,7 +20,7 @@ class BookFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Book
 
-    title = factory.Faker('sentence')
+    title = factory.Faker('sentence', nb_words=3)
     author = factory.SubFactory(AuthorFactory)
     publisher = factory.SubFactory(PublisherFactory)
     price = factory.Faker('pydecimal', positive=True)
@@ -43,3 +40,5 @@ class SaleBookFactory(factory.django.DjangoModelFactory):
     sale = factory.SubFactory(SaleFactory)
     book = factory.SubFactory(BookFactory)
     quantity = factory.Faker('random_int', min=1, max=100)
+
+
