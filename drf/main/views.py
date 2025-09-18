@@ -21,6 +21,7 @@ from .models import *
 class BookViewSet(mixins.ListModelMixin,
                   mixins.RetrieveModelMixin,
                   mixins.UpdateModelMixin,
+                  mixins.CreateModelMixin,
                   viewsets.GenericViewSet):
 
     def get_queryset(self):

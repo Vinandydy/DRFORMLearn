@@ -23,7 +23,7 @@ class BookFactory(factory.django.DjangoModelFactory):
     title = factory.Faker('sentence', nb_words=3)
     author = factory.SubFactory(AuthorFactory)
     publisher = factory.SubFactory(PublisherFactory)
-    price = factory.Faker('pydecimal', positive=True)
+    price = factory.Faker('pydecimal', positive=True, left_digits=4, right_digits=2)
     published_year = factory.Faker('year')
 
 
