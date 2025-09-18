@@ -47,3 +47,14 @@ class BookAPITest(APITestCase):
         self.assertEqual(self.book1.title, 'New Title')
         self.assertEqual(self.book1.price, 100.00)
 
+    def test_(self):
+        equal_url = reverse('book-equal')
+        response = self.client.get(equal_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_new_update(self):
+        url = reverse('book-prefix')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+

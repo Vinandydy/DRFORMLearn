@@ -38,13 +38,14 @@ class BookViewSet(mixins.ListModelMixin,
         detail=False,
         methods=['GET'],
         url_path='equal',
+        url_name='equal'
     )
     def get_equal_author_publisher(self, _):
         queryset = self.get_queryset().filter(author__name=F('publisher__name'))
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
-    @action(detail=True, methods=['GET'], url_path='update')
+    @action(detail=True, methods=['GET'], url_path='update', url_name='update')
     def atomic_update(self, _):
         instance = self.get_object()
         Book.objects.filter(pk=instance.pk).update(price=F('price') * Decimal('0.8'))
@@ -56,7 +57,8 @@ class BookViewSet(mixins.ListModelMixin,
     @action(
         detail=False,
         methods=['GET'],
-        url_path='is_cheap_or_expensive'
+        url_path='is_cheap_or_expensive',
+        url_name = 'is_cheap'
     )
     def book_price(self, _):
         queryset = self.get_queryset().filter(Q(price__gt=2000) | Q(price__lt=500))
@@ -67,7 +69,8 @@ class BookViewSet(mixins.ListModelMixin,
     #Задание 7
     @action(detail=False,
             methods=['GET'],
-            url_path='prefix')
+            url_path='prefix',
+            url_name = 'prefix')
     def book_prefix(self, request):
         queryset = self.get_queryset().annotate(
             prefixed_title=Concat(Value('Book: '), 'title')
