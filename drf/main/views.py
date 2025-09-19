@@ -122,7 +122,8 @@ class AuthorViewSet(mixins.ListModelMixin,
     @action(
         detail=False,
         methods=['POST'],
-        url_path='find'
+        url_path='find',
+        url_name='find'
     )
     def find_author_book(self, request):
         data = request.data
