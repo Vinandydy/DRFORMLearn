@@ -7,8 +7,8 @@ from main.tests.factories import *
 
 class BookAPITest(APITestCase):
     def setUp(self):
-        self.book1 = BookFactory.create()
-        self.book2 = BookFactory.create()
+        self.book1 = BookFactory()
+        self.book2 = BookFactory()
         self.book_url = reverse('book-list')
 
     def test_get_book(self):
@@ -23,8 +23,8 @@ class BookAPITest(APITestCase):
         self.assertEqual(response.data['title'], self.book1.title)
 
     def test_create_book(self):
-        author = AuthorFactory.create()
-        publisher = PublisherFactory.create()
+        author = AuthorFactory()
+        publisher = PublisherFactory()
         data = {
             'title': "Test 1",
             'author': author.id,

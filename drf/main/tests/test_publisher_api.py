@@ -7,8 +7,8 @@ from main.tests.factories import *
 
 class PublisherAPITest(APITestCase):
     def setUp(self):
-        self.publisher1 = PublisherFactory.create()
-        self.publisher2 = PublisherFactory.create()
+        self.publisher1 = PublisherFactory()
+        self.publisher2 = PublisherFactory()
         self.url = reverse('publisher-list')
 
     def test_get(self):

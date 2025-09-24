@@ -9,9 +9,9 @@ from main.tests.factories import *
 
 class AuthorAPITest(APITestCase):
     def setUp(self):
-        self.author1 = AuthorFactory.create()
-        self.author2 = AuthorFactory.create()
-        self.author3 = AuthorFactory.create()
+        self.author1 = AuthorFactory()
+        self.author2 = AuthorFactory()
+        self.author3 = AuthorFactory()
         self.author_url = reverse('author-list')
 
     def test_author_list(self):
