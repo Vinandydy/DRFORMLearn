@@ -20,10 +20,10 @@ class AuthorAPITest(APITestCase):
         self.assertEqual(len(response.data), 0)
 
     def test_find(self):
-        Book.objects.create(author=self.author1, publisher=PublisherFactory(), title='smth', published_year=2000, price=50)
-        Book.objects.create(author=self.author1, publisher=PublisherFactory(), title='smth', published_year=2000, price=150)
-        Book.objects.create(author=self.author2, publisher=PublisherFactory(), title='smth', published_year=2000, price=200)
-        Book.objects.create(author=self.author2, publisher=PublisherFactory(), title='smth', published_year=2000, price=2000)
+        BookFactory(author=self.author1, title='smth', published_year=2000, price=50)
+        BookFactory(author=self.author1, title='smth', published_year=2000, price=150)
+        BookFactory(author=self.author2, title='smth', published_year=2000, price=200)
+        BookFactory(author=self.author2, title='smth', published_year=2000, price=2000)
         self.find_url = reverse('author-find')
         data={
             'author_a': self.author1,

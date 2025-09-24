@@ -25,6 +25,7 @@ class BookAPITest(APITestCase):
     def test_create_book(self):
         author = AuthorFactory()
         publisher = PublisherFactory()
+        book_count = Book.objects.count()
         data = {
             'title': "Test 1",
             'author': author.id,
@@ -34,7 +35,7 @@ class BookAPITest(APITestCase):
         }
         response = self.client.post(self.book_url, data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Book.objects.count(), 3)
+        self.assertEqual(Book.objects.count(), book_count + 1)
 
     def test_update_book(self):
         update_url = reverse('book-detail', kwargs={'pk': self.book1.pk})
