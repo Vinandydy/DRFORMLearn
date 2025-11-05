@@ -5,32 +5,55 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('main', '0001_initial'),
+        ("main", "0001_initial"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='sale',
-            name='quantity',
+            model_name="sale",
+            name="quantity",
         ),
         migrations.RemoveField(
-            model_name='sale',
-            name='book',
+            model_name="sale",
+            name="book",
         ),
         migrations.CreateModel(
-            name='SaleBook',
+            name="SaleBook",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('quantity', models.IntegerField(default=1)),
-                ('book', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='salesBook', to='main.book')),
-                ('sale', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='salesBook', to='main.sale')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("quantity", models.IntegerField(default=1)),
+                (
+                    "book",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="salesBook",
+                        to="main.book",
+                    ),
+                ),
+                (
+                    "sale",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="salesBook",
+                        to="main.sale",
+                    ),
+                ),
             ],
         ),
         migrations.AddField(
-            model_name='sale',
-            name='book',
-            field=models.ManyToManyField(related_name='sales', through='main.SaleBook', to='main.book'),
+            model_name="sale",
+            name="book",
+            field=models.ManyToManyField(
+                related_name="sales", through="main.SaleBook", to="main.book"
+            ),
         ),
     ]

@@ -8,13 +8,13 @@ class BookSerialzer(serializers.ModelSerializer):
 
     class Meta:
         model = Book
-        fields = ['title', 'author', 'publisher', 'price', 'published_year', 'quantity']
+        fields = ["title", "author", "publisher", "price", "published_year", "quantity"]
 
 
 class AuthorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Author
-        fields = ['name']
+        fields = ["name"]
 
 
 class BookDiscountSerialzer(serializers.ModelSerializer):
@@ -22,22 +22,26 @@ class BookDiscountSerialzer(serializers.ModelSerializer):
 
     class Meta:
         model = Book
-        fields = ['title', 'author', 'publisher', 'price', 'published_year', 'discount']
+        fields = ["title", "author", "publisher", "price", "published_year", "discount"]
 
     def get_discount(self, obj):
-        if hasattr(obj, 'discount'):
+        if hasattr(obj, "discount"):
             return obj.discount
         return None
 
 
 class PublisherSerializer(serializers.ModelSerializer):
     books_count = serializers.IntegerField(read_only=True)
-    sale_income = serializers.DecimalField(max_digits=12, decimal_places=2, read_only=True, allow_null=True)
-    avg_price = serializers.DecimalField(max_digits=12, decimal_places=2, read_only=True, allow_null=True)
+    sale_income = serializers.DecimalField(
+        max_digits=12, decimal_places=2, read_only=True, allow_null=True
+    )
+    avg_price = serializers.DecimalField(
+        max_digits=12, decimal_places=2, read_only=True, allow_null=True
+    )
 
     class Meta:
         model = Publisher
-        fields = ['name', 'books_count', 'sale_income', 'avg_price']
+        fields = ["name", "books_count", "sale_income", "avg_price"]
 
 
 class SalesSerializer(serializers.ModelSerializer):
@@ -46,4 +50,4 @@ class SalesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Book
-        fields = ['title', 'month', 'total_quantity']
+        fields = ["title", "month", "total_quantity"]

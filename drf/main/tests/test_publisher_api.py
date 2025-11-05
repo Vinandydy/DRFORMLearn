@@ -9,7 +9,7 @@ class PublisherAPITest(APITestCase):
     def setUp(self):
         self.publisher1 = PublisherFactory()
         self.publisher2 = PublisherFactory()
-        self.url = reverse('publisher-list')
+        self.url = reverse("publisher-list")
 
     def test_get(self):
         response = self.client.get(self.url)

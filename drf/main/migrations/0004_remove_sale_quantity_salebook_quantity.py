@@ -4,19 +4,18 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('main', '0003_remove_salebook_quantity_sale_quantity'),
+        ("main", "0003_remove_salebook_quantity_sale_quantity"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='sale',
-            name='quantity',
+            model_name="sale",
+            name="quantity",
         ),
         migrations.AddField(
-            model_name='salebook',
-            name='quantity',
+            model_name="salebook",
+            name="quantity",
             field=models.IntegerField(default=1),
         ),
     ]
