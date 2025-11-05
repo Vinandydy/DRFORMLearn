@@ -15,6 +15,7 @@ services:
     env_file:
       - .env
 
+
   drfdb:
     image: postgres:15
     restart: always
