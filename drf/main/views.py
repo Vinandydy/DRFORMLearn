@@ -1,5 +1,8 @@
 from decimal import Decimal
 
+from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiParameter
+from drf_spectacular.types import OpenApiTypes
+
 from django.db.models import (
     Count,
     F,
@@ -28,7 +31,14 @@ from .serializers import (
 # Create your views here.
 from .models import *
 
-
+@extend_schema(
+    summary='Работа с книгами',
+    description='Библиотека',
+    tags=['Книги'],
+    responses={
+        200: BookSerialzer(many=True)
+    }
+)
 class BookViewSet(
     mixins.ListModelMixin,
     mixins.RetrieveModelMixin,
